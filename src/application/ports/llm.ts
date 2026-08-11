@@ -1,4 +1,5 @@
 export interface LlmRequest {
+  system: string;
   prompt: string;
 }
 

@@ -2,8 +2,10 @@ import "dotenv/config";
 import { RunAgentUseCase } from "../../application/useCases/RunAgentUseCase.ts";
 import { AnthropicClient } from "../../infrastructure/AnthropicClient.ts";
 import { AnthropicConfigBuilder } from "../../infrastructure/AnthropicConfigBuilder.ts";
+import { FileSystemRuleProvider } from "../../infrastructure/FileSystemRuleProvider.ts";
+import path from "path";
 
-const input = process.argv.slice(2).join(" ") || "Say hello in one sentence. always in a different language";
+const input = process.argv.slice(2).join(" ") || "in term of DDD, what do you think about my rules?";
 
 if (!input) {
   console.error('Usage: npm run agent -- "your request"');
@@ -19,8 +21,12 @@ const config = new AnthropicConfigBuilder()
 // Infrastructure implementation of the application port
 const llm = new AnthropicClient(config);
 
+const rules = new FileSystemRuleProvider(
+  path.resolve(".agent/rules"),
+);
+
 // Application use case
-const useCase = new RunAgentUseCase(llm);
+const useCase = new RunAgentUseCase(llm, rules);
 
 // Execute
 const result = await useCase.execute(input);

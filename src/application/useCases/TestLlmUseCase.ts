@@ -7,6 +7,7 @@ export class TestLlmUseCase {
 
   async execute(prompt: string): Promise<string> {
     const response = await this.llm.generate({
+      system: "",
       prompt,
     });
 

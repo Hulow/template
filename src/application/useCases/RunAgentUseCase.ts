@@ -1,20 +1,22 @@
 import { Agent } from "../core/Agent.ts";
 import { Goal } from "../core/Goal.ts";
 import { Llm } from "../ports/llm.ts";
+import { RuleProvider } from "../ports/RuleProvider.ts";
 
 export class RunAgentUseCase {
-  constructor(
-    private readonly llm: Llm,
-  ) {}
+    constructor(
+      private readonly llm: Llm,
+      private readonly ruleProvider: RuleProvider,
+    ) {}
+  
+    async execute(input: string): Promise<string> {
+      const agent = new Agent(
+        "Agent",
+        new Goal("Help the user accomplish their request"),
+        [],
+      );
 
-  async execute(input: string): Promise<string> {
-    const agent = new Agent(
-      "Agent",
-      new Goal("Help the user accomplish their request"),
-      [],
-    );
-
-    const prompt = 
+      const prompt = 
         `
             You are ${agent.name}.
 
@@ -25,11 +27,18 @@ export class RunAgentUseCase {
             ${input}
         `;
     ;
-
-    const response = await this.llm.generate({
-      prompt,
-    });
-
-    return response.content;
+  
+      const rules = await this.ruleProvider.getRules();
+  
+      const system = rules
+        .map((rule) => `## ${rule.name}\n${rule.instruction}`)
+        .join("\n\n");
+  
+      const response = await this.llm.generate({
+        system,
+        prompt,
+      });
+  
+      return response.content;
+    }
   }
-}

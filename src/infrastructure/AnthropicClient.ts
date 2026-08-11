@@ -15,6 +15,7 @@ export class AnthropicClient implements Llm {
     const message = await this.client.messages.create({
       model: this.config.model,
       max_tokens: this.config.maxTokens,
+      system: request.system,
       temperature: this.config.temperature,
       messages: [
         {
