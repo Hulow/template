@@ -14,6 +14,7 @@ export class RunAgentUseCase {
         "Agent",
         new Goal("Help the user accomplish their request"),
         [],
+        []
       );
 
       const prompt = 
@@ -37,6 +38,7 @@ export class RunAgentUseCase {
       const response = await this.llm.generate({
         system,
         prompt,
+        tools: [],
       });
   
       return response.content;
