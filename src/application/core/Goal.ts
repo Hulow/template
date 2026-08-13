@@ -1,5 +1,3 @@
 export class Goal {
-    constructor(
-      readonly description: string,
-    ) {}
-  }
+  constructor(readonly description: string) {}
+}

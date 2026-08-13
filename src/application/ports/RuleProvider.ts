@@ -1,5 +1,5 @@
-import { Rule } from "../core/Rule.ts";
+import { Rule } from '../core/Rule.ts';
 
 export interface RuleProvider {
-    getRules(): Promise<Rule[]>;
-  }
+  getRules(): Promise<Rule[]>;
+}

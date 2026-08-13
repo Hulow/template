@@ -1,13 +1,11 @@
-import fs from "node:fs/promises";
-import path from "node:path";
-import { Action } from "../application/core/Action.ts";
-import { ToolNames } from "../application/core/ToolNames.ts";
-import { ToolExecutionResult, ToolExecutor } from "../application/ports/ToolExecutor.ts";
+import fs from 'node:fs/promises';
+import path from 'node:path';
+import { Action } from '../application/core/Action.ts';
+import { ToolNames } from '../application/core/ToolNames.ts';
+import { ToolExecutionResult, ToolExecutor } from '../application/ports/ToolExecutor.ts';
 
 export class FileSystemToolExecutor implements ToolExecutor {
-  constructor(
-    private readonly workspaceRoot: string,
-  ) {}
+  constructor(private readonly workspaceRoot: string) {}
 
   async execute(action: Action): Promise<ToolExecutionResult> {
     try {
@@ -40,32 +38,32 @@ export class FileSystemToolExecutor implements ToolExecutor {
   }
 
   private async readFile(input: unknown): Promise<ToolExecutionResult> {
-    const relativePath = requireStringField(input, "path");
+    const relativePath = requireStringField(input, 'path');
     const resolved = this.resolveInWorkspace(relativePath);
-    const content = await fs.readFile(resolved, "utf-8");
+    const content = await fs.readFile(resolved, 'utf-8');
     return { output: content, isError: false };
   }
 
   private async writeFile(input: unknown): Promise<ToolExecutionResult> {
-    const relativePath = requireStringField(input, "path");
-    const content = requireStringField(input, "content");
+    const relativePath = requireStringField(input, 'path');
+    const content = requireStringField(input, 'content');
     const resolved = this.resolveInWorkspace(relativePath);
 
     await fs.mkdir(path.dirname(resolved), { recursive: true });
-    await fs.writeFile(resolved, content, "utf-8");
+    await fs.writeFile(resolved, content, 'utf-8');
 
     return { output: `Wrote ${content.length} bytes to ${relativePath}.`, isError: false };
   }
 
   private async listFiles(input: unknown): Promise<ToolExecutionResult> {
-    const relativePath = requireStringField(input, "path");
+    const relativePath = requireStringField(input, 'path');
     const resolved = this.resolveInWorkspace(relativePath);
     const entries = await fs.readdir(resolved, { withFileTypes: true });
 
     const listing = entries
       .map((entry) => (entry.isDirectory() ? `${entry.name}/` : entry.name))
       .sort()
-      .join("\n");
+      .join('\n');
 
     return { output: listing, isError: false };
   }
@@ -73,10 +71,10 @@ export class FileSystemToolExecutor implements ToolExecutor {
 
 function requireStringField(input: unknown, field: string): string {
   if (
-    typeof input !== "object" ||
+    typeof input !== 'object' ||
     input === null ||
     !(field in input) ||
-    typeof (input as Record<string, unknown>)[field] !== "string"
+    typeof (input as Record<string, unknown>)[field] !== 'string'
   ) {
     throw new Error(`Expected "${field}" to be a string in tool input.`);
   }

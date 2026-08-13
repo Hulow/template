@@ -1,6 +1,6 @@
-import { AgentContextBuilder } from "../AgentContextBuilder.ts";
-import { AgentFactory } from "../AgentFactory.ts";
-import { AgentRunner } from "../services/AgentRunner.ts";
+import { AgentContextBuilder } from '../AgentContextBuilder.ts';
+import { AgentFactory } from '../AgentFactory.ts';
+import { AgentRunner } from '../services/AgentRunner.ts';
 
 export class RunAgentUseCase {
   constructor(
@@ -9,21 +9,11 @@ export class RunAgentUseCase {
     private readonly agentRunner: AgentRunner,
   ) {}
 
-  async execute(
-    agentType: "code" | "research" | "review",
-    input: string,
-  ): Promise<string> {
+  async execute(agentType: 'code' | 'research' | 'review', input: string): Promise<string> {
     const agent = this.agentFactory.create(agentType);
 
-    const context = await this.contextBuilder.build(
-      agent,
-      input,
-    );
+    const context = await this.contextBuilder.build(agent, input);
 
-    return this.agentRunner.run(
-      agent,
-      context.system,
-      context.messages,
-    );
+    return this.agentRunner.run(agent, context.system, context.messages);
   }
 }

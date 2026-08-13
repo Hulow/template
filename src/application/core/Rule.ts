@@ -1,6 +1,6 @@
 export class Rule {
-    constructor(
-      readonly name: string,
-      readonly instruction: string,
-    ) {}
-  }
+  constructor(
+    readonly name: string,
+    readonly instruction: string,
+  ) {}
+}

@@ -1,4 +1,4 @@
-import { Action } from "../core/Action.ts";
+import { Action } from '../core/Action.ts';
 
 export interface ToolExecutionResult {
   output: string;

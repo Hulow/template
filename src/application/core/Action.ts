@@ -1,6 +1,6 @@
 export class Action {
-    constructor(
-      readonly name: string,
-      readonly input: unknown,
-    ) {}
-  }
+  constructor(
+    readonly name: string,
+    readonly input: unknown,
+  ) {}
+}
