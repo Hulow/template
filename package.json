@@ -6,7 +6,9 @@
   "scripts": {
     "build": "tsc",
     "test:anthropic": "tsx src/presentation/cli/testAnthropic.ts",
-    "agent": "tsx src/presentation/cli/runAgent.ts"
+    "agent": "tsx src/presentation/cli/runAgent.ts",
+    "format": "prettier --write .",
+    "format:check": "prettier --check ."
   },
   "keywords": [],
   "author": "",
@@ -18,6 +20,7 @@
   },
   "devDependencies": {
     "@types/node": "^26.2.0",
+    "prettier": "^3.4.2",
     "tsx": "^4.23.12",
     "typescript": "^7.0.2"
   }
