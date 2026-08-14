@@ -7,6 +7,7 @@
     "build": "tsc",
     "test:anthropic": "tsx src/presentation/cli/testAnthropic.ts",
     "agent": "tsx src/presentation/cli/runAgent.ts",
+    "workflow": "tsx src/presentation/cli/runWorkflow.ts",
     "format": "prettier --write .",
     "format:check": "prettier --check ."
   },

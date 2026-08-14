@@ -49,7 +49,7 @@ const agentRunner = new AgentRunner(llm, actionOrchestrator);
 // Application use case
 // ─────────────────────────────────────────────
 const useCase = new RunAgentUseCase(agentFactory, agentContextBuilder, agentRunner);
-const agentType = 'code';
+const agentType = 'implementer';
 
 // ─────────────────────────────────────────────
 // Execute
