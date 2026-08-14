@@ -7,6 +7,11 @@ export interface ToolResultBlock {
   isError: boolean;
 }
 
+export interface LlmUsage {
+  inputTokens: number;
+  outputTokens: number;
+}
+
 export type ContentBlock =
   { type: 'text'; text: string } | { type: 'tool_use'; id: string; name: string; input: unknown };
 
@@ -25,6 +30,7 @@ export interface LlmRequest {
 export interface LlmResponse {
   content: ContentBlock[];
   stopReason: LlmStopReason;
+  usage: LlmUsage;
 }
 
 export interface Llm {

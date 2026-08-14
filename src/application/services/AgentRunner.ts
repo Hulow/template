@@ -6,11 +6,18 @@ export class AgentRunner {
   constructor(
     private readonly llm: Llm,
     private readonly actionOrchestrator: ActionOrchestrator,
-    private readonly maxIterations: number = 10,
   ) {}
 
-  async run(agent: Agent, system: string, messages: LlmMessage[]): Promise<string> {
-    for (let iteration = 0; iteration < this.maxIterations; iteration++) {
+  async run(
+    agent: Agent,
+    system: string,
+    messages: LlmMessage[],
+  ): Promise<string> {
+    let iteration = 0;
+
+    while (true) {
+      iteration++;
+
       const response = await this.llm.generate({
         system,
         messages,
@@ -22,16 +29,22 @@ export class AgentRunner {
         content: response.content,
       });
 
-      const toolCalls = response.content.filter((block) => block.type === 'tool_use');
-
-      console.error(
-        `[agent] iteration=${iteration + 1}/${this.maxIterations} ` +
-          `stopReason=${response.stopReason} ` +
-          `toolCalls=${toolCalls.length}`,
+      const toolCalls = response.content.filter(
+        (block) => block.type === 'tool_use',
       );
+      console.log('#----------------------------------#')
+      console.error(
+        `[${agent.name}] iteration=${iteration} ` +
+          `stopReason=${response.stopReason} ` +
+          `toolCalls=${toolCalls.length} ` +
+          `inputTokens=${response.usage.inputTokens} ` +
+          `outputTokens=${response.usage.outputTokens}`,
+      );
+      console.log('#----------------------------------#')
 
       if (toolCalls.length > 0) {
-        const results = await this.actionOrchestrator.execute(response.content);
+        this.logToolCalls(agent, toolCalls);
+        const results = await this.actionOrchestrator.execute(toolCalls);
 
         messages.push({
           role: 'user',
@@ -41,17 +54,25 @@ export class AgentRunner {
         continue;
       }
 
-      return this.extractResponse(response.content, response.stopReason);
+      return this.extractResponse(
+        response.content,
+        response.stopReason,
+      );
     }
-
-    return '[Stopped: reached max tool-use iterations]';
   }
 
-  private extractResponse(content: ContentBlock[], stopReason: string): string {
+  private extractResponse(
+    content: ContentBlock[],
+    stopReason: string,
+  ): string {
     const text = this.extractText(content);
 
     if (stopReason === 'max_tokens') {
-      return text || '[Response was cut off by the token limit before it could finish]';
+      console.error(
+        '[agent] response was cut off by the token limit',
+      );
+
+      return text || '[Response was cut off by the token limit]';
     }
 
     return text;
@@ -59,8 +80,23 @@ export class AgentRunner {
 
   private extractText(content: ContentBlock[]): string {
     return content
-      .filter((block): block is Extract<ContentBlock, { type: 'text' }> => block.type === 'text')
+      .filter(
+        (block): block is Extract<ContentBlock, { type: 'text' }> =>
+          block.type === 'text',
+      )
       .map((block) => block.text)
       .join('');
+  }
+
+  private logToolCalls(agent: Agent, toolCalls: ContentBlock[]): void {
+    console.error(`[${agent.name}] executing ${toolCalls.length} tool(s)`);
+  
+    for (const toolCall of toolCalls) {
+      if (toolCall.type !== 'tool_use') continue;
+  
+      console.error(
+        `[${agent.name}] → ${toolCall.name} ${JSON.stringify(toolCall.input)}`,
+      );
+    }
   }
 }

@@ -6,6 +6,10 @@ export class AnthropicResponseMapper {
     return {
       content: this.toContent(message.content),
       stopReason: this.toStopReason(message.stop_reason),
+      usage: {
+        inputTokens: message.usage.input_tokens,
+        outputTokens: message.usage.output_tokens,
+      },
     };
   }
 

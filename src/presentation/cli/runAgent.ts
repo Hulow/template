@@ -26,7 +26,7 @@ if (!input) {
 // ─────────────────────────────────────────────
 const config = new AnthropicConfigBuilder(process.env.ANTHROPIC_API_KEY!)
   .model('claude-sonnet-5')
-  .maxTokens(2024)
+  .maxTokens(10000)
   .build();
 
 // ─────────────────────────────────────────────
