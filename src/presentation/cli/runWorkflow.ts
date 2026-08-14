@@ -14,11 +14,15 @@ import { AnthropicRequestMapper } from '../../infrastructure/AnthropicRequestMap
 import { AnthropicResponseMapper } from '../../infrastructure/AnthropicResponseMapper.ts';
 import { FileSystemRuleProvider } from '../../infrastructure/FileSystemRuleProvider.ts';
 import { FileSystemToolExecutor } from '../../infrastructure/FileSystemToolExecutor.ts';
+import { readInputFile } from './readInputFile.ts';
 
-const input = process.argv.slice(2).join(' ');
+const cliInput = process.argv.slice(2).join(' ');
+const input = cliInput || readInputFile(path.resolve(import.meta.dirname, 'workflow-input'));
 
 if (!input) {
-  console.error('Usage: npm run agent -- "your request"');
+  console.error(
+    'Usage: npm run workflow -- "your request" (or write your request to workflow-input.md)',
+  );
   process.exit(1);
 }
 

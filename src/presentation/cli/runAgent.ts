@@ -11,12 +11,13 @@ import { ActionOrchestrator } from '../../application/services/ActionOrchestrato
 import { AgentContextBuilder } from '../../application/AgentContextBuilder.ts';
 import { AnthropicRequestMapper } from '../../infrastructure/AnthropicRequestMapper.ts';
 import { AnthropicResponseMapper } from '../../infrastructure/AnthropicResponseMapper.ts';
+import { readInputFile } from './readInputFile.ts';
 
-const input =
-  process.argv.slice(2).join(' ') || 'in term of DDD, what do you think about my rules?';
+const cliInput = process.argv.slice(2).join(' ');
+const input = cliInput || readInputFile(path.resolve(import.meta.dirname, 'agent-input'));
 
 if (!input) {
-  console.error('Usage: npm run agent -- "your request"');
+  console.error('Usage: npm run agent -- "your request" (or write your request to agent-input.md)');
   process.exit(1);
 }
 

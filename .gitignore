@@ -2,3 +2,7 @@ node_modules/
 .npm-cache/
 .env
 dist/
+src/presentation/cli/agent-input.md
+src/presentation/cli/agent-input.txt
+src/presentation/cli/workflow-input.md
+src/presentation/cli/workflow-input.txt
