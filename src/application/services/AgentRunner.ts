@@ -9,11 +9,7 @@ export class AgentRunner {
     private readonly maxIterations: number = 10,
   ) {}
 
-  async run(
-    agent: Agent,
-    system: string,
-    messages: LlmMessage[],
-  ): Promise<string> {
+  async run(agent: Agent, system: string, messages: LlmMessage[]): Promise<string> {
     for (let iteration = 0; iteration < this.maxIterations; iteration++) {
       const response = await this.llm.generate({
         system,
@@ -26,20 +22,16 @@ export class AgentRunner {
         content: response.content,
       });
 
-      const toolCalls = response.content.filter(
-        (block) => block.type === 'tool_use',
-      );
+      const toolCalls = response.content.filter((block) => block.type === 'tool_use');
 
       console.error(
         `[agent] iteration=${iteration + 1}/${this.maxIterations} ` +
-        `stopReason=${response.stopReason} ` +
-        `toolCalls=${toolCalls.length}`,
+          `stopReason=${response.stopReason} ` +
+          `toolCalls=${toolCalls.length}`,
       );
 
       if (toolCalls.length > 0) {
-        const results = await this.actionOrchestrator.execute(
-          response.content,
-        );
+        const results = await this.actionOrchestrator.execute(response.content);
 
         messages.push({
           role: 'user',
@@ -49,19 +41,13 @@ export class AgentRunner {
         continue;
       }
 
-      return this.extractResponse(
-        response.content,
-        response.stopReason,
-      );
+      return this.extractResponse(response.content, response.stopReason);
     }
 
     return '[Stopped: reached max tool-use iterations]';
   }
 
-  private extractResponse(
-    content: ContentBlock[],
-    stopReason: string,
-  ): string {
+  private extractResponse(content: ContentBlock[], stopReason: string): string {
     const text = this.extractText(content);
 
     if (stopReason === 'max_tokens') {
@@ -73,10 +59,7 @@ export class AgentRunner {
 
   private extractText(content: ContentBlock[]): string {
     return content
-      .filter(
-        (block): block is Extract<ContentBlock, { type: 'text' }> =>
-          block.type === 'text',
-      )
+      .filter((block): block is Extract<ContentBlock, { type: 'text' }> => block.type === 'text')
       .map((block) => block.text)
       .join('');
   }

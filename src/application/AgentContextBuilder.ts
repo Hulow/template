@@ -7,18 +7,26 @@ export interface AgentContext {
   messages: LlmMessage[];
 }
 
+const AGENT_RUNTIME_INSTRUCTIONS = `
+You are an autonomous agent.
+
+Accomplish the user's request by using your available tools directly.
+Do not merely describe what you are going to do.
+
+Only respond with plain text once the task is complete.
+If you need clarification that cannot be resolved using your tools, ask for it.
+`.trim();
+
 export class AgentContextBuilder {
   constructor(private readonly ruleProvider: RuleProvider) {}
 
   async build(agent: Agent, input: string): Promise<AgentContext> {
     const rules = await this.ruleProvider.getRules();
 
-    const behavior =
-      "You are an autonomous agent. Always accomplish the user's request by calling your available tools directly — do not merely describe what you are about to do. Only respond with plain text once the task is fully complete, or if you need clarification you cannot resolve yourself.";
-
-    const system = [behavior, ...rules.map((rule) => `## ${rule.name}\n${rule.instruction}`)].join(
-      '\n\n',
-    );
+    const system = [
+      AGENT_RUNTIME_INSTRUCTIONS,
+      ...rules.map((rule) => `## ${rule.name}\n${rule.instruction}`),
+    ].join('\n\n');
 
     const prompt = `
       You are ${agent.name}.
