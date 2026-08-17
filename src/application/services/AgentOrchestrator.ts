@@ -5,6 +5,11 @@ import { AgentEventListener, AgentExecutor } from "../ports/AgentExecutor.ts";
   Responsability: execute an agent.
 */
 
+export interface AgentRunOptions {
+  onEvent?: AgentEventListener;
+  interactive?: boolean;
+}
+
 export class AgentOrchestrator {
   constructor(
     private readonly agentExecutor: AgentExecutor,
@@ -13,14 +18,15 @@ export class AgentOrchestrator {
   async run(
     agent: Agent,
     prompt: string,
-    onEvent?: AgentEventListener,
+    options?: AgentRunOptions,
   ): Promise<string> {
     const result = await this.agentExecutor.run(
       agent,
       {
         prompt,
+        interactive: options?.interactive,
       },
-      onEvent,
+      options?.onEvent,
     );
 
     return result.content;

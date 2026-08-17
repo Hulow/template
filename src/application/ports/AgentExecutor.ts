@@ -3,6 +3,7 @@ import type { AgentEvent } from "../events/AgentEvent.ts";
 
 export interface AgentInput {
   prompt: string;
+  interactive?: boolean;
 }
 
 export interface AgentOutput {
