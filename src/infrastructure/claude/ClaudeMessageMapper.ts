@@ -1,12 +1,14 @@
-import type { SDKMessage } from "@anthropic-ai/claude-agent-sdk";
-
 import type { AgentEvent } from "../../application/events/AgentEvent.ts";
+import type { ClaudeSDKMessage } from "./ClaudeSDKMessage.ts";
 
 export class ClaudeMessageMapper {
-  toEvent(message: SDKMessage): AgentEvent {
+  toEvent(message: ClaudeSDKMessage): AgentEvent {
     if (message.type === "assistant") {
       const content = message.message.content
-        .filter((block) => block.type === "text")
+        .filter(
+          (block): block is { type: "text"; text: string } =>
+            block.type === "text",
+        )
         .map((block) => block.text)
         .join("");
 

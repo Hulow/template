@@ -9,6 +9,11 @@ import type { AgentEvent } from "../../application/events/AgentEvent.ts";
 import type { Environment } from "../../application/ports/Environment.ts";
 
 import { ClaudeMessageMapper } from "./ClaudeMessageMapper.ts";
+import type { ClaudeSDKMessage } from "./ClaudeSDKMessage.ts";
+
+/* 
+  Responsability: Query anthropic api and handle each event
+*/
 
 export class ClaudeAgentSession implements AgentSession {
   constructor(
@@ -38,8 +43,7 @@ export class ClaudeAgentSession implements AgentSession {
     });
 
     for await (const message of messages) {
-      console.log(message)
-      yield this.messageMapper.toEvent(message);
+      yield this.messageMapper.toEvent(message as ClaudeSDKMessage);
     }
   }
 }

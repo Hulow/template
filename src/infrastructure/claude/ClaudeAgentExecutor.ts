@@ -4,8 +4,11 @@ import {
   AgentOutput,
 } from "../../application/ports/AgentExecutor.ts";
 import type { AgentSession } from "../../application/ports/AgentSession.ts";
+import { Agent } from "../../domain/agent/Agent.ts";
 
-import { AgentRef } from "../../domain/agent/AgentRef.ts";
+/* 
+  Responsability: Run a session and handle events.
+*/
 
 export class ClaudeAgentExecutor implements AgentExecutor {
   constructor(
@@ -13,7 +16,7 @@ export class ClaudeAgentExecutor implements AgentExecutor {
   ) {}
 
   async run(
-    _agent: AgentRef,
+    _agent: Agent,
     input: AgentInput,
   ): Promise<AgentOutput> {
     const events = this.session.run(input);

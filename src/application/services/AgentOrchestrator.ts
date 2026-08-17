@@ -1,5 +1,9 @@
-import { AgentRef } from "../../domain/agent/AgentRef.ts";
+import { Agent } from "../../domain/agent/Agent.ts";
 import { AgentExecutor } from "../ports/AgentExecutor.ts";
+
+/* 
+  Responsability: execute an agent.
+*/
 
 export class AgentOrchestrator {
   constructor(
@@ -7,7 +11,7 @@ export class AgentOrchestrator {
   ) {}
 
   async run(
-    agent: AgentRef,
+    agent: Agent,
     prompt: string,
   ): Promise<string> {
     const result = await this.agentExecutor.run(
@@ -16,6 +20,8 @@ export class AgentOrchestrator {
         prompt,
       },
     );
+
+    console.log(result)
 
     return result.content;
   }
