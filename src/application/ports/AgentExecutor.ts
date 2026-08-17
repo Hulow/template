@@ -1,5 +1,5 @@
-import { AgentRef } from "../../domain/agent/AgentRef.ts";
-
+import { Agent } from "../../domain/Agent.ts";
+import type { AgentEvent } from "../events/AgentEvent.ts";
 
 export interface AgentInput {
   prompt: string;
@@ -9,9 +9,12 @@ export interface AgentOutput {
   content: string;
 }
 
+export type AgentEventListener = (event: AgentEvent) => void;
+
 export interface AgentExecutor {
   run(
-    agent: AgentRef,
+    agent: Agent,
     input: AgentInput,
+    onEvent?: AgentEventListener,
   ): Promise<AgentOutput>;
 }

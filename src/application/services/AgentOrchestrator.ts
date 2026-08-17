@@ -1,7 +1,7 @@
-import { Agent } from "../../domain/agent/Agent.ts";
-import { AgentExecutor } from "../ports/AgentExecutor.ts";
+import { Agent } from "../../domain/Agent.ts";
+import { AgentEventListener, AgentExecutor } from "../ports/AgentExecutor.ts";
 
-/* 
+/*
   Responsability: execute an agent.
 */
 
@@ -13,15 +13,15 @@ export class AgentOrchestrator {
   async run(
     agent: Agent,
     prompt: string,
+    onEvent?: AgentEventListener,
   ): Promise<string> {
     const result = await this.agentExecutor.run(
       agent,
       {
         prompt,
       },
+      onEvent,
     );
-
-    console.log(result)
 
     return result.content;
   }

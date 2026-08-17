@@ -3,6 +3,7 @@ import { Environment } from "../../application/ports/Environment.ts";
 
 export class EnvironmentConfig implements Environment {
   readonly anthropicApiKey: string;
+  readonly model: string;
 
   constructor() {
     const anthropicApiKey = process.env.ANTHROPIC_API_KEY;
@@ -14,5 +15,6 @@ export class EnvironmentConfig implements Environment {
     }
 
     this.anthropicApiKey = anthropicApiKey;
+    this.model = "claude-haiku-4-5";
   }
 }
