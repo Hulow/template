@@ -1,10 +1,5 @@
-export interface AgentExecutor {
-  run(agent: AgentRef, input: AgentInput): Promise<AgentOutput>;
-}
+import { AgentRef } from "../../domain/agent/AgentRef.ts";
 
-export interface AgentRef {
-  id: string;
-}
 
 export interface AgentInput {
   prompt: string;
@@ -12,4 +7,11 @@ export interface AgentInput {
 
 export interface AgentOutput {
   content: string;
+}
+
+export interface AgentExecutor {
+  run(
+    agent: AgentRef,
+    input: AgentInput,
+  ): Promise<AgentOutput>;
 }
